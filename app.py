@@ -7,7 +7,52 @@ st.title("🤖 আমার নিজস্ব AI চ্যাটবট")
 st.write("Gemini API দ্বারা চালিত আপনার ব্যক্তিগত সহকারী।")
 
 # ২. Gemini API কী সেটআপ
-API_KEY = "YOUR_GEMINI_API_KEY" # এখানে আপনার আসল API Key বসান
+API_KEY = "# To run this code you need to install the following dependencies:
+# pip install google-genai
+
+import os
+from google import genai
+from google.genai import types
+
+
+def generate():
+    client = genai.Client(
+        api_key=os.environ.get("GEMINI_API_KEY"),
+    )
+
+    model = "gemini-3-flash-preview"
+    contents = [
+        types.Content(
+            role="user",
+            parts=[
+                types.Part.from_text(text="""INSERT_INPUT_HERE"""),
+            ],
+        ),
+    ]
+    tools = [
+        types.Tool(googleSearch=types.GoogleSearch(
+        )),
+    ]
+    generate_content_config = types.GenerateContentConfig(
+        thinking_config=types.ThinkingConfig(
+            thinking_level="HIGH",
+        ),
+        tools=tools,
+    )
+
+    for chunk in client.models.generate_content_stream(
+        model=model,
+        contents=contents,
+        config=generate_content_config,
+    ):
+        if text := chunk.text:
+            print(text, end="")
+
+if __name__ == "__main__":
+    generate()
+
+
+" # এখানে আপনার আসল API Key বসান
 client = genai.Client(api_key=API_KEY)
 
 # ৩. চ্যাট হিস্ট্রি (মেসেজ রেকর্ড) ধরে রাখার ব্যবস্থা
